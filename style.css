@@ -1,0 +1,60 @@
+/*
+Theme Name: Tim's Theme
+Theme URI: https://timothystannard.com
+Author: Tim Stannard
+Author URI: https://timothystannard.com
+Description: This is my first custom theme!
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: <https://www.gnu.org/licenses/gpl-2.0.html>
+Text Domain: my-custom-theme
+Tags: minimal-design
+*/
+
+body {
+}
+
+* {
+    font-family:Helvetica, sans-serif;
+    /* font-weight:200; */
+}
+#menu-main-menu {
+    padding-left:0px;
+}
+#menu-main-menu li{
+    display: inline;
+    margin-right:20px;
+    background: #E8B499;
+    border-radius:10px;
+    border:1px solid #E7D8A9;
+    padding:5px;
+    font-size:12px;
+}
+
+p {
+    font-weight:200;
+}
+
+#menu-main-menu a:visited, #menu-main-menu a {
+    color:black;
+    text-decoration:none;
+}
+
+.post-card {
+    width:33%;
+    padding:0px 10px;
+    margin: 6px;
+    background-color:#F3D67F;
+    border-radius:5px;
+    box-shadow: 5px 10px #888888;
+}
+
+#container {
+    display: flex;
+}
+
+.footer {
+    background-color:#f7f7f7;
+    margin-top:20px;
+    padding:10px 20px;
+}
