@@ -13,11 +13,8 @@ if ( have_posts() ) :
     
 ?>
 
-<div class="post-card">
+<div class="post-card-full blue-background">
     <h3><a href="<?php the_permalink() ?>"> <?php the_title() ?> </a></h3>
-    <?php the_time('F jS, Y'); ?>
-    <br>
-    <?php the_time(); ?>
     <?php the_excerpt() ?>
 </div>
 <?php endwhile;
@@ -34,4 +31,4 @@ get_footer();
 
 ?>
 
-<p>This is the index page template.</p>
+<p>This is a generic page template.</p>

@@ -49,6 +49,10 @@ p {
     box-shadow: 5px 10px #888888;
 }
 
+.post-card-full {
+    width:100%;
+} 
+
 #container {
     display: flex;
 }
@@ -57,4 +61,16 @@ p {
     background-color:#f7f7f7;
     margin-top:20px;
     padding:10px 20px;
+}
+
+.blue-background {
+    background:#B3D6E8;
+}
+
+.green-background {
+    background:#DCF2DE;    
+}
+
+a:visited {
+    color:black;
 }
