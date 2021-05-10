@@ -3,7 +3,6 @@
 get_header(); ?>
 
 <div id="container">
-
 <?php
 
 // the wordpress loop

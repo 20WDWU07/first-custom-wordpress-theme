@@ -2,10 +2,13 @@
 
 get_header(); ?>
 
+<div>
+<!-- <img src="<?php bloginfo('stylesheet_directory');?>/images/image.jpg" alt="mars landscape"/> -->
+</div>
+
 <div id="container">
 
 <!-- <h1> Welcome to my website, enjoy your stay </h1> -->
-
 <?php
 
 // the wordpress loop
