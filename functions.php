@@ -2,10 +2,12 @@
 
 // add theme support
 add_theme_support('post-thumbnails');
+add_theme_support('woocommerce');
 
 // this is our custom function which loads our stylesheet from the root directory
 function custom_theme_assets() {
     wp_enqueue_style('tim-custom-style', get_stylesheet_uri());
+    wp_enqueue_script('tim-js-file', get_template_directory_uri() . '/js/script.js');
 }
 
 add_action('wp_enqueue_scripts', 'custom_theme_assets');
@@ -182,5 +184,22 @@ function create_qualifications_staff_taxomony() {
         )
     );
 }
+
+// Removing fields and customising the Woocommerce cart
+
+add_filter('woocommerce_checkout_fields','custom_override_checkout_fields');
+function custom_override_checkout_fields($fields) {
+    unset($fields['order']['order_comments']);
+    return $fields; 
+}
+
+// make the phone number optional
+add_filter( 'woocommerce_billing_fields', 'custom_change_fields' );
+function custom_change_fields($address_fields){
+    $address_fields['billing_phone']['required'] = false;
+    unset($address_fields['billing_postcode']);
+    return $address_fields; 
+}
+
 
 ?>

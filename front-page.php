@@ -5,7 +5,12 @@ get_header(); ?>
 <div>
 <!-- <img src="<?php bloginfo('stylesheet_directory');?>/images/image.jpg" alt="mars landscape"/> -->
 </div>
+<div id="container">
+<?php
+echo get_theme_mod("my_custom_message");
 
+?>
+</div>
 <div id="container">
 
 <!-- <h1> Welcome to my website, enjoy your stay </h1> -->
@@ -60,6 +65,11 @@ else :
 	echo '<p>There are no posts!</p>';
 endif; ?>
 </div>
+
+<?php
+echo do_shortcode('[contact-form-7 id="34" title="Contact form 1"]');
+echo do_shortcode('[littlepopup]');
+?>
 
 <?php
 
