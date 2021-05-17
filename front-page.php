@@ -9,6 +9,7 @@ get_header(); ?>
 <?php
 echo get_theme_mod("my_custom_message");
 
+
 ?>
 </div>
 <div id="container">
@@ -67,8 +68,8 @@ endif; ?>
 </div>
 
 <?php
-echo do_shortcode('[contact-form-7 id="34" title="Contact form 1"]');
-echo do_shortcode('[littlepopup]');
+// echo do_shortcode('[contact-form-7 id="34" title="Contact form 1"]');
+echo do_shortcode('[calc]');
 ?>
 
 <?php

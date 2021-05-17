@@ -112,7 +112,7 @@ function save_staff_meta_box_data($post_id) {
     update_post_meta( $post_id, '_job_title', $my_data );
 }
 
-// ---------------start creting a metabox for our books------------------------------
+// ---------------start creating a metabox for our books------------------------------
 
 /* Register and display metabox */
 add_action( 'add_meta_boxes', 'book_author_add_metabox');
@@ -155,6 +155,63 @@ function save_books_meta_box_data($post_id) {
     // Update the meta field in the database.
     update_post_meta( $post_id, '_bookauthor', $my_data );
 }
+
+// ---------------create a new metabox which contains multiple fields------------------------------
+
+function create_metabox_mutiple_fields(){
+    add_meta_box(
+        'id-of-metabox',
+        'Metabox With Multiple Fields',
+        'add_multiple_fields_content',
+        'books'
+    );
+}
+
+function add_multiple_fields_content() {
+    global $post;
+
+    // Get Value of Fields From Database
+    $radio_field = get_post_meta($post->ID, 'custom_meta_radio_field', true);
+    echo $radio_field;
+    ?>
+    <div class="my-row">
+        <div class="custom-label">Radio Fields</div>
+        <div class="fields">
+         <label><input type="radio" name="custom_meta_radio_field" value="Option 1" <?php if($radio_field == "Option 1") echo 'checked';?>>Option 1</label>
+         <label><input type="radio" name="custom_meta_radio_field" value="Option 2" <?php if($radio_field == "Option 2") echo 'checked';?>>Option 2</label>
+         <label><input type="radio" name="custom_meta_radio_field" value="Option 3" <?php if($radio_field == "Option 3") echo 'checked';?>>Option 3</label>
+        </div>
+    </div>
+    <?php
+}
+
+/* Register and display metabox */
+add_action( 'add_meta_boxes', 'create_metabox_mutiple_fields');
+
+// save function which will save our custom multiple fields metabox
+
+function save_multiple_fields_metabox($post_id, $post) {
+     
+    // check current use permissions
+     $post_type = get_post_type_object( $post->post_type );
+
+     if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) ) {
+        return $post_id;
+    }
+    // Do not save the data if autosave
+       if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
+        return $post_id;
+    }
+    // define your own post type here
+        if( $post->post_type != 'books' ) {
+        return $post_id;
+    }
+    if(isset($_POST["custom_meta_radio_field"])) :
+    update_post_meta($post->ID,'custom_meta_radio_field', $_POST["custom_meta_radio_field"]);
+    endif;
+}
+
+add_action('save_post', 'save_multiple_fields_metabox', 200, 2); 
 
 // hook
 
