@@ -12,13 +12,37 @@ function custom_theme_assets() {
 
 add_action('wp_enqueue_scripts', 'custom_theme_assets');
 
+// this is our custom function which loads our metabox stylesheet from the root directory
+function custom_metabox_assets() {
+    wp_enqueue_style('metabox-stylesheet', get_template_directory_uri() . '/css/metabox-styles.css');
+}
+
+// generate special css
+function generate_special_css(){
+    $color_picker = get_theme_mod('color_picker');
+    $custom_image = get_theme_mod('custom_image');
+    ?>
+        <style type="text/css" id="custom-style-from-customiser">
+            a {
+                color:<?php echo $color_picker; ?>!important;
+            }
+            .special-color {
+                color:<?php echo $color_picker; ?>;
+            }
+        </style>
+    <?php
+}
+add_action('wp_head', 'generate_special_css');
+
+add_action('admin_enqueue_scripts', 'custom_metabox_assets');
+
 // register our custom navigation menu in the backend
 register_nav_menus( [ 'primary' => __( 'Primary Menu' )]);
 
 // this function will set the excerpt length
 function customize_the_excerpt_length() {
     // return 10 characters
-    return 10;
+    return get_theme_mod('my_custom_number');
 }
 
 // a filter hook to modify the default Wordpress excerpt length
@@ -172,7 +196,10 @@ function add_multiple_fields_content() {
 
     // Get Value of Fields From Database
     $radio_field = get_post_meta($post->ID, 'custom_meta_radio_field', true);
-    echo $radio_field;
+    $checkbox_field = get_post_meta($post->ID, 'custom_meta_checkbox_field', true);
+    $dropdown_field = get_post_meta($post->ID, 'custom_meta_select_field', true);
+    $textarea_field = get_post_meta($post->ID, 'custom_meta_textarea_field', true);
+
     ?>
     <div class="my-row">
         <div class="custom-label">Radio Fields</div>
@@ -182,6 +209,31 @@ function add_multiple_fields_content() {
          <label><input type="radio" name="custom_meta_radio_field" value="Option 3" <?php if($radio_field == "Option 3") echo 'checked';?>>Option 3</label>
         </div>
     </div>
+    <div class="my-row" style="margin-bottom: 10px;">
+        <div class="custom-label" style="margin-bottom: 10px;">Checkbox Fields</div>
+        <div class="fields">
+         <label><input type="checkbox" name="custom_meta_checkbox_field[]" value="Checkbox Option 1" <?php if(in_array("Checkbox Option 1", $checkbox_field)) echo 'checked';?>/>Checkbox Option 1</label>
+         <label><input type="checkbox" name="custom_meta_checkbox_field[]" value="Checkbox Option 2" <?php if(in_array("Checkbox Option 2", $checkbox_field)) echo 'checked';?>/>Checkbox Option 2</label>
+         <label><input type="checkbox" name="custom_meta_checkbox_field[]" value="Checkbox Option 3" <?php if(in_array("Checkbox Option 3", $checkbox_field)) echo 'checked';?>/>Checkbox Option 3</label>
+        </div>
+    </div>
+    <div class="my-row" style="margin-bottom: 10px;">
+        <div class="custom-label"  style="margin-bottom: 10px;">Select Dropdown</div>
+        <div class="fields">
+        <select name="custom_meta_select_field">
+            <option value="">Select Option</option>
+            <option value="Select Option 1" <?php if($dropdown_field == "Select Option 1") echo 'selected';?>>Select Option 1</option>
+            <option value="Select Option 2" <?php if($dropdown_field == "Select Option 2") echo 'selected';?>>Select Option 2</option>
+            <option value="Select Option 3" <?php if($dropdown_field == "Select Option 3") echo 'selected';?>>Select Option 3</option>
+        </select>
+        </div>
+    </div>
+    <div class="my-row" style="margin-bottom: 10px;">
+        <div class="custom-label"  style="margin-bottom: 10px;">Textarea</div>
+        <div class="fields">
+        <textarea rows="5" name="custom_meta_textarea_field"><?php echo $textarea_field; ?></textarea>
+        </div>
+    </div> 
     <?php
 }
 
@@ -206,8 +258,29 @@ function save_multiple_fields_metabox($post_id, $post) {
         if( $post->post_type != 'books' ) {
         return $post_id;
     }
+
+    // save the radio input data
     if(isset($_POST["custom_meta_radio_field"])) :
-    update_post_meta($post->ID,'custom_meta_radio_field', $_POST["custom_meta_radio_field"]);
+        update_post_meta($post->ID,'custom_meta_radio_field', $_POST["custom_meta_radio_field"]);
+    endif;
+
+    // save the checkbox input data
+    if(isset($_POST["custom_meta_checkbox_field"])) :
+        update_post_meta($post->ID,'custom_meta_checkbox_field', $_POST["custom_meta_checkbox_field"]);
+    endif;
+
+    // save the dropdown input data
+    if(isset($_POST["custom_meta_select_field"])) :
+        update_post_meta($post->ID,'custom_meta_select_field', $_POST["custom_meta_select_field"]);
+    endif;
+
+
+    // Sanitize user input.
+    $textarea_data_clean = sanitize_text_field( $_POST['custom_meta_textarea_field'] );
+
+    // save the textarea input data
+    if(isset($_POST["custom_meta_textarea_field"])) :
+        update_post_meta($post->ID,'custom_meta_textarea_field', $textarea_data_clean);
     endif;
 }
 
@@ -258,5 +331,63 @@ function custom_change_fields($address_fields){
     return $address_fields; 
 }
 
+// ----------------------register a custom seection in the WP customizer
+
+function mytheme_customize_register($wp_customize) {
+    $wp_customize->add_section("my_custom_section", array(
+        "title" => __("My custom settings", "customizer_custom_section"),
+        "priority" => 20,
+    ));
+    // the first argument of add_setting function is the name of the control
+    $wp_customize->add_setting("my_custom_message", array(
+        "default" => "",
+        "transport" => "refresh"
+    ));
+    $wp_customize->add_setting("color_picker", array(
+        "default" => "#666666",
+        "transport" => "refresh"
+    ));
+    $wp_customize->add_setting("custom_image", array(
+        "default" => "",
+        "transport" => "refresh"
+    ));
+    $wp_customize->add_setting("my_custom_number", array(
+        "default" => "",
+        "transport" => "refresh",
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Control($wp_customize, "my_custom_message", array(
+        "label" => __("Enter a custom message here", "customizer_control_label"),
+        "section" => "my_custom_section",
+        "setting" => "my_custom_message",
+        "type" => "textarea"
+        )
+    ));
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, "color_picker", array(
+        'label' => 'Hyperlink colors',
+        'section' => 'my_custom_section',
+        'settings' => 'color_picker'
+        )
+    ));
+    $wp_customize->add_control( new WP_Customize_Image_Control($wp_customize, "custom_image", array(
+        'label' => 'Edit My Image',
+        'settings' => 'custom_image',
+        'section'   => 'my_custom_section'
+
+        )
+    ));
+    $wp_customize->add_control(new WP_Customize_Control($wp_customize,"my_custom_number",
+   array(
+       "label" => __("Enter Custom number", "customizer_control_label"),
+       "section" => "my_custom_section",
+       "settings" => "my_custom_number",
+       "type" => "number",
+        )
+    ));
+
+
+}
+
+add_action("customize_register", "mytheme_customize_register");
 
 ?>
