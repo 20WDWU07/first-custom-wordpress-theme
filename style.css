@@ -41,7 +41,7 @@ p {
 }
 
 .post-card {
-    width:33%;
+    flex: 0 20%;
     padding:0px 10px;
     margin: 6px;
     background-color:#F3D67F;
@@ -59,6 +59,7 @@ p {
 
 #container {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .footer {

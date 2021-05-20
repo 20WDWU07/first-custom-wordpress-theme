@@ -23,12 +23,33 @@ function generate_special_css(){
     $custom_image = get_theme_mod('custom_image');
     ?>
         <style type="text/css" id="custom-style-from-customiser">
-            a {
-                color:<?php echo $color_picker; ?>!important;
-            }
             .special-color {
                 color:<?php echo $color_picker; ?>;
             }
+            /* ------ enable dark mode */
+            <?php
+            if (get_theme_mod("my_custom_select") == "enabled") {
+                // whatever comes in here gets run if dark mode is enabled
+                ?>
+                body {
+                background:black;
+                }
+                a, p, h1, h2, h3, h4, div, span {
+                color:white;
+                }
+                <?php
+            }
+            ?>
+            /* custom column numbers, as chosen in the customizer */
+            <?php
+            if (get_theme_mod("select_column_count") == "3cols"){
+                ?>
+                .post-card {
+                    flex: 0 29%;
+                }
+                <?php
+            }
+            ?>
         </style>
     <?php
 }
@@ -331,7 +352,7 @@ function custom_change_fields($address_fields){
     return $address_fields; 
 }
 
-// ----------------------register a custom seection in the WP customizer
+// ----------------------register a custom section in the WP customizer
 
 function mytheme_customize_register($wp_customize) {
     $wp_customize->add_section("my_custom_section", array(
@@ -343,6 +364,7 @@ function mytheme_customize_register($wp_customize) {
         "default" => "",
         "transport" => "refresh"
     ));
+    // ------------settings
     $wp_customize->add_setting("color_picker", array(
         "default" => "#666666",
         "transport" => "refresh"
@@ -355,7 +377,15 @@ function mytheme_customize_register($wp_customize) {
         "default" => "",
         "transport" => "refresh",
     ));
-
+    $wp_customize->add_setting("my_custom_select", array(
+        "default" => "",
+        "transport" => "refresh",
+    ));
+    $wp_customize->add_setting("select_column_count", array(
+        "default" => "",
+        "transport" => "refresh",
+    ));
+    // --------------controls
     $wp_customize->add_control(new WP_Customize_Control($wp_customize, "my_custom_message", array(
         "label" => __("Enter a custom message here", "customizer_control_label"),
         "section" => "my_custom_section",
@@ -384,8 +414,32 @@ function mytheme_customize_register($wp_customize) {
        "type" => "number",
         )
     ));
-
-
+    $wp_customize->add_control(new WP_Customize_Control($wp_customize,"my_custom_select",
+    array(
+        "label" => __("Dark mode theme", "customizer_select_label"),
+        "section" => "my_custom_section",
+        "settings" => "my_custom_select",
+        "type" => "select",
+        "choices" => array(
+            'default' => 'Default - off',
+            'enabled' => 'Enabled'
+        )
+         )
+     ));
+     $wp_customize->add_control(new WP_Customize_Control($wp_customize,"select_column_count",
+     array(
+         "label" => __("Select the amount of columns for posts", "customizer_select_label2"),
+         "section" => "my_custom_section",
+         "settings" => "select_column_count",
+         "type" => "select",
+         "choices" => array(
+             'default' => '4 Columns default',
+             '3cols' => '3 Columns',
+             '2cols' => '2 Columns',
+             '1col' => '1 Columns'
+         )
+          )
+      ));
 }
 
 add_action("customize_register", "mytheme_customize_register");

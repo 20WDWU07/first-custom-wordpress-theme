@@ -8,6 +8,7 @@ get_header(); ?>
  <!-- get theme mod gets our wp_customizer setting- the name should be equal to the setting name -->
 <div>
  <h1><?php echo get_theme_mod("my_custom_message");?></h1>
+ <h1><?php echo get_theme_mod("my_custom_select");?></h1>
 </div>
 <div>
 <img src="<?php echo get_theme_mod('custom_image');?>" alt="custom home page image" class="custom-image"/>
