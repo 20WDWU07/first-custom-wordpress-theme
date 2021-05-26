@@ -7,7 +7,8 @@ add_theme_support('woocommerce');
 // this is our custom function which loads our stylesheet from the root directory
 function custom_theme_assets() {
     wp_enqueue_style('tim-custom-style', get_stylesheet_uri());
-    wp_enqueue_script('tim-js-file', get_template_directory_uri() . '/js/script.js');
+    wp_register_script('tim-js-file', get_template_directory_uri() . '/js/script.js', false, null, true);
+    wp_enqueue_script('tim-js-file');
 }
 
 add_action('wp_enqueue_scripts', 'custom_theme_assets');
